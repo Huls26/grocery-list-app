@@ -9,16 +9,25 @@ import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
 import GroceryItem from "./GroceryItem";
 import AddItem from "./AddItem";
 
-export const toogleAddItem = React.createContext();
+export const form = React.createContext();
 
 export default function UserUi() {
     // getList()
     // .then(docs => console.log(docs))
     // .catch(error => console.log("Something went wrong fetching data"));
-    let [isAdd, setIsAdd] = useState(() => false);
+    let [formData, setFormData] = useState(() => ({
+                                                    item: "",
+                                                    isAdd: false,
+                                                })
+                                            );
 
-    function handleAddItem() {
-        setIsAdd(prevValue => !prevValue)
+    console.log(formData)
+    
+      function handleAddItem() {
+        setFormData(prevValue => ({
+            ...prevValue,
+            isAdd: !prevValue.isAdd
+        }))
     }
 
     function buttonAdd() {
@@ -31,10 +40,10 @@ export default function UserUi() {
         <div className="pt-12 text-primary1 max-w-3xl mx-auto">
             <h1 className="font-montserrat text-3xl font-bold mb-5">Grocery List</h1>
 
-            <div className={ isAdd ? "mb-3" : "mb-1"}>
-                <toogleAddItem.Provider value={ handleAddItem }>
-                    { isAdd ? <AddItem /> : buttonAdd() }
-                </toogleAddItem.Provider>
+            <div className={ formData.isAdd ? "mb-3" : "mb-1"}>
+                <form.Provider value={ setFormData }>
+                    { formData.isAdd ? <AddItem /> : buttonAdd() }
+                </form.Provider>
             </div>
         </div>
     )
