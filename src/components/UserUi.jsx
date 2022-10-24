@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { 
     getList,
 } from "../utils/api";
@@ -8,6 +8,8 @@ import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
 
 import GroceryItem from "./GroceryItem";
 import AddItem from "./AddItem";
+
+export const toogleAddItem = React.createContext();
 
 export default function UserUi() {
     // getList()
@@ -30,12 +32,10 @@ export default function UserUi() {
             <h1 className="font-montserrat text-3xl font-bold mb-5">Grocery List</h1>
 
             <div className={ isAdd ? "mb-3" : "mb-1"}>
-                { isAdd ? <AddItem /> : buttonAdd() }
+                <toogleAddItem.Provider value={ handleAddItem }>
+                    { isAdd ? <AddItem /> : buttonAdd() }
+                </toogleAddItem.Provider>
             </div>
-         
-            
-            <h3 className="font-montserrat text-light1 text-lg font-bold tracking-widest">List</h3>
-
         </div>
     )
 }

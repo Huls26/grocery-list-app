@@ -1,5 +1,6 @@
 import UserUi from "../components/UserUi";
 import GroceryItem from "../components/GroceryItem";
+import GroceryList from "../components/GroceryList";
 
 export default function UserPage() {
 
@@ -9,10 +10,8 @@ export default function UserPage() {
                 <UserUi />
             </main>
 
-            <section id="grocery-list" className="mx-16 max-w-3xl md:mx-auto px-4 py-2 bg-secondary1 rounded-md shadow -mt-16">
-                
-                <GroceryItem />
-                <GroceryItem />
+            <section id="grocery-list" className="mx-16 md:mx-auto -mt-24">
+                <GroceryList />
             </section>
         </div>
     )
