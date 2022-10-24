@@ -15,15 +15,15 @@ export default function UserUi() {
     // getList()
     // .then(docs => console.log(docs))
     // .catch(error => console.log("Something went wrong fetching data"));
-    let [formData, setFormData] = useState(() => ({
-                                                    item: "",
-                                                    isAdd: false,
-                                                })
-                                            );
+    const defaultData = {
+                            item: "",
+                            isAdd: false,
+                            groceryList: [],
+                        }
+    let [formData, setFormData] = useState(() => defaultData);
 
     console.log(formData)
-    
-      function handleAddItem() {
+    function handleAddItem() {
         setFormData(prevValue => ({
             ...prevValue,
             isAdd: !prevValue.isAdd
@@ -41,7 +41,9 @@ export default function UserUi() {
             <h1 className="font-montserrat text-3xl font-bold mb-5">Grocery List</h1>
 
             <div className={ formData.isAdd ? "mb-3" : "mb-1"}>
-                <form.Provider value={ setFormData }>
+
+                {/* using the function of useState instead the data itself */}
+                <form.Provider value={ { formData, setFormData } }>
                     { formData.isAdd ? <AddItem /> : buttonAdd() }
                 </form.Provider>
             </div>

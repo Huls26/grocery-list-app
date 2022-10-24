@@ -4,11 +4,11 @@ import { useState, useContext } from 'react'
 import { form } from './UserUi';
 
 export default function AddItem() {
-    const data = useContext(form);
+    const {formData, setFormData}= useContext(form);
     
     // handle events
     function handleCancel() {
-        data(prevValue => ({
+        setFormData(prevValue => ({
             ...prevValue,
             isAdd: !prevValue.isAdd
         }))
@@ -19,7 +19,7 @@ export default function AddItem() {
         const value = target.type === "checkbox" ? target.checked : target.value;
         const name = target.name;
 
-        data(prevValue => ({
+        setFormData(prevValue => ({
                 ...prevValue,
                 [name]: value,
         }))
@@ -28,11 +28,17 @@ export default function AddItem() {
     function handleSubmit(event) {
         event.preventDefault()
 
+        setFormData(prevValue => ({
+                    ...prevValue,
+                    groceryList: [prevValue.item, ...prevValue.groceryList],
+                    item: "",
+                })
+        )
     }
      
     return (
         <form onSubmit={ handleSubmit } className="flex flex-col space-y-3">
-            <input type="text" onChange={ handleChange } name="item" className="py-0.5 px-2 rounded outline-green focus:invalid:outline-red text-option2 placeholder:font-normal text-lg capitalize font-bold" placeholder="Add Item"/>
+            <input type="text" value={ formData.item } onChange={ handleChange } name="item" className="py-0.5 px-2 rounded outline-green focus:invalid:outline-red text-option2 placeholder:font-normal text-lg capitalize font-bold" placeholder="Add Item"/>
 
             <div className='flexitems-start space-x-3 h-full'>
                 <button type="submit" className="px-4 py-1 mb-10 flex-none bg-primary2 rounded-full text-light1 font-nunito text-sm hover:bg-secondary1 transition ease-out duration-500"><i className="not-italic"><FontAwesomeIcon icon={ faCartShopping } /> Add item</i></button>
