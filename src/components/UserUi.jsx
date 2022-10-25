@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { 
     getList,
 } from "../utils/api";
@@ -8,21 +8,12 @@ import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
 
 import GroceryItem from "./GroceryItem";
 import AddItem from "./AddItem";
-
-export const form = React.createContext();
+import { form } from "../pages/UserPage";
 
 export default function UserUi() {
-    // getList()
-    // .then(docs => console.log(docs))
-    // .catch(error => console.log("Something went wrong fetching data"));
-    const defaultData = {
-                            item: "",
-                            isAdd: false,
-                            groceryList: [],
-                        }
-    let [formData, setFormData] = useState(() => defaultData);
+    const {formData, setFormData}= useContext(form);
+    const isAdd = formData.isAdd;
 
-    console.log(formData)
     function handleAddItem() {
         setFormData(prevValue => ({
             ...prevValue,
@@ -40,12 +31,8 @@ export default function UserUi() {
         <div className="pt-12 text-primary1 max-w-3xl mx-auto">
             <h1 className="font-montserrat text-3xl font-bold mb-5">Grocery List</h1>
 
-            <div className={ formData.isAdd ? "mb-3" : "mb-1"}>
-
-                {/* using the function of useState instead the data itself */}
-                <form.Provider value={ { formData, setFormData } }>
-                    { formData.isAdd ? <AddItem /> : buttonAdd() }
-                </form.Provider>
+            <div className={ isAdd ? "mb-3" : "mb-1"}>
+                { isAdd ? <AddItem /> : buttonAdd() }
             </div>
         </div>
     )
