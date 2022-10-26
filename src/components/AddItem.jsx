@@ -1,6 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
 import { useState, useContext } from 'react'
+import { nanoid } from 'nanoid';
+
 import { form } from '../pages/UserPage';
 
 export default function AddItem() {
@@ -14,7 +16,6 @@ export default function AddItem() {
         }))
     }
 
-    console.log(formData)
     function handleChange(event) {
         const target = event.currentTarget;
         const value = target.type === "checkbox" ? target.checked : target.value;
@@ -26,24 +27,30 @@ export default function AddItem() {
                     ...prevValue.grocery,
                     [name]: value,
                 }
-                
         }))
     }
 
     function handleSubmit(event) {
         event.preventDefault()
 
-        setFormData(prevValue => ({
-                    ...prevValue,
-                    groceryList: [prevValue.grocery, ...prevValue.groceryList],
-                    grocery: {
-                        ...prevValue.grocery, 
-                        item: "",
-                    },
-                })
-        )
+        setFormData(prevValue => {
+            const groceryItem = {
+                ...prevValue.grocery,
+                id: nanoid(10),
+            }
+
+            return ({
+                ...prevValue,
+                groceryList: [groceryItem, ...prevValue.groceryList],
+                grocery: {
+                    ...prevValue.grocery, 
+                    item: "",
+                    id: "",
+                },
+            })
+        })
     }
-     
+    
     return (
         <form onSubmit={ handleSubmit } className="flex flex-col space-y-3">
             <input type="text" value={ formData.grocery.item } onChange={ handleChange } name="item" className="py-0.5 px-2 rounded outline-green focus:invalid:outline-red text-option2 placeholder:font-normal text-lg capitalize font-bold" placeholder="Add Item"/>

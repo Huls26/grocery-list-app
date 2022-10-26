@@ -10,29 +10,40 @@ export default function GroceryItem({item}) {
     let { formData, setFormData } = useContext(form)
     let [isCheck, setIsCheck] = useState(() => false)
 
-    const isCheckItem = formData.grocery.isCheck;
+    const itemId = item.id;
+    const isCheckItem = item.isCheck;
 
-    useEffect(() => {
-        checkItem()
-    }, [isCheck])
-
+    console.log(isCheckItem)
     const isCheckStyle = {
         textDecoration: isCheckItem ? "line-through" : "none",
     }
 
     // event
     function handleCheck() {
-       setIsCheck(prevValue => !prevValue);
+        checkItem()
+        setIsCheck(prevValue => !prevValue); 
     }
 
+    console.log(formData)
     function checkItem() {
-        setFormData(prevValue => ({
-            ...prevValue,
-            grocery: {
-                ...prevValue.grocery,
-                isCheck: !prevValue.grocery.isCheck,
-            }
-        })
+        setFormData(prevValue => {
+            const itemIsCheck = prevValue.groceryList.map(item => {
+                if (itemId === item.id) {
+                    return ({
+                        ...item,
+                        isCheck: !item.isCheck,
+                    })
+                } else {
+                    return item
+                }
+            })
+
+            return ({
+                ...prevValue,
+                groceryList: itemIsCheck,
+            })
+        }
+            
 );
     }
     return (

@@ -11,6 +11,7 @@ export default function UserPage() {
         grocery: {
                 item: "",
                 isCheck: false,
+                id: "",
             },
         isAdd: false,
         groceryList: [],
@@ -26,7 +27,7 @@ export default function UserPage() {
                 </form.Provider>
             </main>
 
-            <section id="grocery-list" className="mx-16 md:mx-auto -mt-20">
+            <section id="grocery-list" className="px-16 md:mx-auto -mt-20">
                 <form.Provider value={ {formData, setFormData} }>
                     <GroceryList />
                 </form.Provider>
