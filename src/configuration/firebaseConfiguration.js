@@ -15,4 +15,4 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const user = collection(db, "user");
 
-export { db, user }
+export { app }
