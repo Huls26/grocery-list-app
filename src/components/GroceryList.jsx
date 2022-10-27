@@ -14,7 +14,7 @@ export default function GroceryList() {
             <h3 className="font-montserrat text-light1 text-lg font-bold tracking-widest mb-5">List</h3>
 
             <div className="px-4 py-2 bg-secondary1 rounded-md shadow">
-                { noItem ? groceryElement : <h1 className="my-3 text-center text-xl font-bold text-red cursor-pointer">No items yet</h1>}
+                { noItem ? groceryElement : <h1 className="my-3 text-center text-xl font-bold text-red cursor-pointer">No items</h1>}
             </div>
         </main>
     )

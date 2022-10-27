@@ -3,6 +3,7 @@ import React, { useState, useContext } from "react";
 import UserUi from "../components/UserUi";
 import GroceryItem from "../components/GroceryItem";
 import GroceryList from "../components/GroceryList";
+import Header from "../components/Header";
 
 export const form = React.createContext();
 
@@ -20,18 +21,24 @@ export default function UserPage() {
 
     return (
         <div>
-            <main className="px-16  bg-option2 pb-20 ">
-                {/* using the function of useState instead the data itself */}
-                <form.Provider value={ {formData, setFormData} }>
-                    <UserUi />
-                </form.Provider>
-            </main>
+            <section className="bg-option2 pb-20 ">
+                <header className="bg-primary1 px-16 py-3 mb-6">
+                    <Header />
+                </header>
 
-            <section id="grocery-list" className="px-16 md:mx-auto -mt-20">
+                <div className="px-16">
+                    {/* using the function of useState instead the data itself */}
+                    <form.Provider value={ {formData, setFormData} }>
+                        <UserUi />
+                    </form.Provider>
+                </div>
+            </section>
+
+            <main id="grocery-list" className="px-16 md:mx-auto -mt-20">
                 <form.Provider value={ {formData, setFormData} }>
                     <GroceryList />
                 </form.Provider>
-            </section>
+            </main>
         </div>
     )
 }

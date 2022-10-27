@@ -8,24 +8,17 @@ import { form } from "../pages/UserPage";
 
 export default function GroceryItem({item}) {
     let { formData, setFormData } = useContext(form)
-    let [isCheck, setIsCheck] = useState(() => false)
+    let [forceRender, setforceRender] = useState(() => false)
 
     const itemId = item.id;
     const isCheckItem = item.isCheck;
 
-    console.log(isCheckItem)
     const isCheckStyle = {
         textDecoration: isCheckItem ? "line-through" : "none",
     }
 
     // event
     function handleCheck() {
-        checkItem()
-        setIsCheck(prevValue => !prevValue); 
-    }
-
-    console.log(formData)
-    function checkItem() {
         setFormData(prevValue => {
             const itemIsCheck = prevValue.groceryList.map(item => {
                 if (itemId === item.id) {
@@ -42,10 +35,20 @@ export default function GroceryItem({item}) {
                 ...prevValue,
                 groceryList: itemIsCheck,
             })
-        }
-            
-);
+        });
     }
+    
+    function handleDelete() {
+        setFormData(prevValue => {
+            const newItems = prevValue.groceryList.filter(item => itemId !== item.id);
+
+            return ({
+                ...prevValue,
+                groceryList: newItems,
+            })
+        })
+    }
+
     return (
         <article className='flex items-center justify-between'>
             <h1 style={ isCheckStyle } className='text-2xl text-primary2 font-bold cursor-pointer capitalize'>{ item.item }
@@ -53,7 +56,7 @@ export default function GroceryItem({item}) {
 
             <div id='icon-container' className='space-x-2'>
                 <button onClick={ handleCheck }><i className='text-green hover:bg-primary1 hover:p-1 rounded'><FontAwesomeIcon icon={ faCheck } /></i></button>
-                <button><i className='text-red hover:bg-primary1 hover:p-1 rounded'><FontAwesomeIcon icon={ faTrash } /></i></button>
+                <button onClick={ handleDelete }><i className='text-red hover:bg-primary1 hover:p-1 rounded'><FontAwesomeIcon icon={ faTrash } /></i></button>
             </div>
         </article>
     )

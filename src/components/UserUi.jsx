@@ -28,7 +28,7 @@ export default function UserUi() {
     }
 
     return (
-        <div className="pt-12 text-primary1 max-w-3xl mx-auto">
+        <div className="text-primary1 max-w-3xl mx-auto">
             <h1 className="font-montserrat text-3xl font-bold mb-5">Grocery List</h1>
 
             <div className={ isAdd ? "mb-3" : "mb-1"}>
