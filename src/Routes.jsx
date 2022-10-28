@@ -7,6 +7,7 @@ import {
 import ErrorPage from "./pages/Error-page";
 import UserPage from "./pages/UserPage";
 import SignInPage from "./pages/SignInPage";
+import CreateAccount from "./pages/CreateAccount";
 
 const router = createBrowserRouter([
     {
@@ -17,7 +18,11 @@ const router = createBrowserRouter([
     {
         path: "sign_in",
         element: <SignInPage />,
-    }
+    },
+    {
+        path: "create_account",
+        element: <CreateAccount />
+    },
 ])
 
 export default function Routes() {

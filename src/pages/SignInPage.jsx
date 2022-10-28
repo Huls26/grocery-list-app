@@ -15,7 +15,7 @@ export default function SignInPage() {
                 </div>
                
 
-                <Link className="my-6"><a className="text-green hover:font-bold">Create Account</a></Link>
+                <Link to={"/create_account"} className="my-6"><a className="text-green hover:font-bold">Create Account</a></Link>
 
                 <div className="flex flex-col space-y-3">
                     <button className="px-4 py-1 flex-none bg-primary2 rounded-full text-light1 font-nunito text-sm hover:bg-secondary1 hover:font-bold transition ease-out duration-500">Sign in</button>
