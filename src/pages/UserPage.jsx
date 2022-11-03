@@ -5,6 +5,8 @@ import GroceryItem from "../components/GroceryItem";
 import GroceryList from "../components/GroceryList";
 import Header from "../components/Header";
 
+import { Outlet } from "react-router-dom";
+
 export const form = React.createContext();
 
 export default function UserPage() {
@@ -32,8 +34,10 @@ export default function UserPage() {
                         <UserUi />
                     </form.Provider>
                 </div>
+
             </section>
 
+            <Outlet />
             <main id="grocery-list" className="px-16 md:mx-auto -mt-20">
                 <form.Provider value={ {formData, setFormData} }>
                     <GroceryList />

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 export default function SignInPage() {
+    
     return (
       <section className="h-screen bg-secondary1 flex justify-center items-center">
             <form className="max-w-sm px-7 py-5 rounded-lg bg-option2 w-72 flex flex-col">

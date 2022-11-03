@@ -8,12 +8,20 @@ import ErrorPage from "./pages/Error-page";
 import UserPage from "./pages/UserPage";
 import SignInPage from "./pages/SignInPage";
 import CreateAccount from "./pages/CreateAccount";
+import { Children } from "react";
+import GroceryListPage from "./pages/GroceryListPage";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <UserPage />,
-        errorElement: <ErrorPage />
+        errorElement: <ErrorPage />,
+        children: [
+            {
+                path: "testing",
+                element: <GroceryListPage />,
+            }
+        ],
     },
     {
         path: "sign_in",
