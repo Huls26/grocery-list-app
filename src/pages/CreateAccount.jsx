@@ -1,13 +1,15 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 
-import { auth } from "../configuration/firebaseConfiguration";
+import { auth, db } from "../configuration/firebaseConfiguration";
 import { 
-    getAuth,
-    connectAuthEmulator, 
-    signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
 } from "firebase/auth";  
+import { 
+    doc,
+    setDoc,
+} from "firebase/firestore";
+import { async } from "@firebase/util";
 
 export default function CreateAccount() {
     const defaultAccountForm = {
@@ -24,10 +26,11 @@ export default function CreateAccount() {
     // connectAuthEmulator(auth, "http://localhost:9099");
 
     let [accountData, setAccountData] = useState(() => accountLocalStorage ? JSON.parse(accountLocalStorage) : defaultAccountForm);
-    let [isError, setIsError] = useState(() => ({
+    let [isErrorSuccess, setIsErrorSuccess] = useState(() => ({
+                                        isCreate: false,
                                         passwordError: false,
                                         accountError: false,
-                                        errorMessage: "",
+                                        message: "",        
                                     }));
     localStorage.setItem(localStorageSetName, JSON.stringify(accountData));
 
@@ -43,7 +46,11 @@ export default function CreateAccount() {
         }))
     }
 
-    console.log(accountData)
+    function cleanMessage(message) {
+        const sliceRemove = message.slice(5);
+        return sliceRemove.split("-").join(" ");
+    }
+
     function handleSubmit(event) {
         event.preventDefault()
         
@@ -56,44 +63,76 @@ export default function CreateAccount() {
         if (accountPassword === accountConfirmPassword && accountPassword.length >= 8) {
             createUserWithEmailAndPassword(auth, email, password).
             then( userCredential => {
-                const user = userCredential
-                console.log(user)
+                const user = userCredential.user;
+                const uid = user.uid;
+
+                setDocument(uid);
+                setIsErrorSuccess(prevValue => ({
+                    ...prevValue,
+                    accountError: false,
+                    message: successMessage,
+                    isCreate: true,
+                    passwordError: false,
+                    accountError: false,
+                }))
             }).
             catch( error => {
-                console.log(error.code)
-                console.log(error.message)
+                // console.log(error.code)
+                // console.log(error.message)
+
+                setIsErrorSuccess(prevValue => ({
+                    ...prevValue,
+                    accountError: true,
+                    message: cleanMessage(error.code),
+                    isCreate: true,
+                }))
             })
-            setIsError(prevValue => ({
-                ...prevValue,
-                passwordError: false,
-                accountError: false,
-            }));
+
+            // setIsErrorSuccess(prevValue => ({
+            //     ...prevValue,
+            //     passwordError: false,
+            //     accountError: false,
+            // }));
         } else {
-           setIsError(prevValue => ({
+           setIsErrorSuccess(prevValue => ({
                 ...prevValue,
                 passwordError: true,
            }));
         }
 
     }
-    
-    let  styleError = isError.passwordError ? "outline-red" : "focus:outline-green";
+
+    // handle message and error display
+    let  styleError = isErrorSuccess.passwordError ? "outline-red" : "focus:outline-green";
 
     function accountErrorMessage(errorMessage) {
         return (
             <>
                 <h1 className="font-bold text-red text-xl">Failed to Create Accoung Try Again : (</h1>
 
-                <h3 className="font-bold text-red text-md">"{ errorMessage }"</h3>
+                <h3 className="font-bold text-primary2 text-md">"{ errorMessage }"</h3>
             </>
         )
+    }
+
+    function successMessage(message) {
+        return (<h1 className="font-bold text-[#251496] text-xl">{message}</h1>)
+    }
+
+    function accountMessageDisplay(message) {
+        return isErrorSuccess.accountError ? accountErrorMessage(message) : successMessage(message)
+    }
+
+    // async/await
+
+    async function setDocument(uid) {
+        const set = await setDoc(doc(db, "users", uid), {groceryList:[]});
     }
 
     return (
         <main className="md:h-screen  bg-secondary1 flex-col justify-center items-center space-y-2 px-16 py-5">
 
-            <h1 className="font-bold text-[#251496] text-xl"></h1>
-            { accountErrorMessage("testing") }
+            { isErrorSuccess.isCreate&&accountMessageDisplay(isErrorSuccess.message) }
 
             <form onSubmit={ handleSubmit } className="px-7 py-5 rounded-lg bg-option2 w-auto flex flex-col my-5">
                 <Link to={"/"}><h2 className="text-primary1 font-bold text-3xl mb-6 cursor-pointer">Grocery list</h2></Link>
@@ -107,7 +146,7 @@ export default function CreateAccount() {
                 <input value={ accountData.email } onChange={ handleForm } type="email" placeholder="Email address" name="email" className="mb-2 px-3 py-1 rounded focus:outline-green focus:invalid:outline-red invalid:text-red text-lg text-dark2" required/>
                 <label htmlFor="email" className="font-aleo text-green text-md leading-5 mb-6 cursor-pointer">Add email address</label>
                 
-                { isError.passwordError&&<p className="mb-3 text-red leading-4">Incorrect password or the length is to short</p> }
+                { isErrorSuccess.passwordError&&<p className="mb-3 text-red leading-4">Incorrect password or the length is to short</p> }
                 <div id="password-container" className="flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-3 mb-6">
 
                     <input value={ accountData.password } onChange={ handleForm } type="password" placeholder="Password" name="password" className={ `px-3 py-1 rounded ${ styleError } outline-none border-red focus:invalid:outline-red invalid:text-red text-lg text-dark2` } autoComplete="on" required/>
