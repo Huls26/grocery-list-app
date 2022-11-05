@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 
 import { auth, db } from "../configuration/firebaseConfiguration";
@@ -34,6 +34,9 @@ export default function CreateAccount() {
                                     }));
     localStorage.setItem(localStorageSetName, JSON.stringify(accountData));
 
+    useEffect(() => {
+        setAccountData(() => defaultAccountForm)
+    }, [isErrorSuccess.isCreate])
     // event
     function handleForm(event) {
         const target = event.currentTarget;
@@ -66,7 +69,15 @@ export default function CreateAccount() {
                 const user = userCredential.user;
                 const uid = user.uid;
 
+                // clear local storage
+                localStorage.clear()
                 setDocument(uid);
+                setTimeout(() => {
+                    setIsErrorSuccess(prevValue => ({
+                        ...prevValue,
+                        isCreate: false,
+                    }))
+                }, "15000")
                 setIsErrorSuccess(prevValue => ({
                     ...prevValue,
                     accountError: false,
@@ -109,7 +120,6 @@ export default function CreateAccount() {
         return (
             <>
                 <h1 className="font-bold text-red text-xl">Failed to Create Accoung Try Again : (</h1>
-
                 <h3 className="font-bold text-primary2 text-md">"{ errorMessage }"</h3>
             </>
         )
@@ -124,7 +134,7 @@ export default function CreateAccount() {
     }
 
     // async/await
-
+    // setDoc
     async function setDocument(uid) {
         const set = await setDoc(doc(db, "users", uid), {groceryList:[]});
     }
