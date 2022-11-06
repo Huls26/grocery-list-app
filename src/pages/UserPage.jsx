@@ -17,6 +17,7 @@ export default function UserPage() {
                 id: "",
             },
         isAdd: false,
+        isSignIn: false,
         groceryList: [],
     }
     let [formData, setFormData] = useState(() => defaultData);
@@ -37,12 +38,15 @@ export default function UserPage() {
 
             </section>
 
-            <Outlet />
-            <main id="grocery-list" className="px-16 md:mx-auto -mt-20">
+            <form.Provider value={ {formData, setFormData} }>
+                <Outlet />
+            </form.Provider>
+           
+            {/* <main id="grocery-list" className="px-16 md:mx-auto -mt-20">
                 <form.Provider value={ {formData, setFormData} }>
                     <GroceryList />
                 </form.Provider>
-            </main>
+            </main> */}
         </div>
     )
 }

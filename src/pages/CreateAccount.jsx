@@ -4,12 +4,12 @@ import { Link } from "react-router-dom"
 import { auth, db } from "../configuration/firebaseConfiguration";
 import { 
     createUserWithEmailAndPassword,
+    signOut,
 } from "firebase/auth";  
 import { 
     doc,
     setDoc,
 } from "firebase/firestore";
-import { async } from "@firebase/util";
 
 export default function CreateAccount() {
     const defaultAccountForm = {
@@ -49,6 +49,7 @@ export default function CreateAccount() {
         }))
     }
 
+    // clean message
     function cleanMessage(message) {
         const sliceRemove = message.slice(5);
         return sliceRemove.split("-").join(" ");
@@ -71,7 +72,8 @@ export default function CreateAccount() {
 
                 // clear local storage
                 localStorage.clear()
-                setDocument(uid);
+                setDocument(uid, auth, user);
+           
                 setTimeout(() => {
                     setIsErrorSuccess(prevValue => ({
                         ...prevValue,
@@ -110,7 +112,6 @@ export default function CreateAccount() {
                 passwordError: true,
            }));
         }
-
     }
 
     // handle message and error display
@@ -119,7 +120,7 @@ export default function CreateAccount() {
     function accountErrorMessage(errorMessage) {
         return (
             <>
-                <h1 className="font-bold text-red text-xl">Failed to Create Accoung Try Again : (</h1>
+                <h1 className="font-bold text-red text-xl">Failed to Create Account Try Again : (</h1>
                 <h3 className="font-bold text-primary2 text-md">"{ errorMessage }"</h3>
             </>
         )
@@ -135,20 +136,37 @@ export default function CreateAccount() {
 
     // async/await
     // setDoc
-    async function setDocument(uid) {
-        const set = await setDoc(doc(db, "users", uid), {groceryList:[]});
+    async function setDocument(id, auth, user) {
+        try {
+            const set = await setDoc(doc(db, "users", id), {
+                groceryList:[],
+                firstName: accountData.firstName,
+                lastName: accountData.lastName,
+                email: accountData.email,
+            });
+            const sO = await signOut(auth);
+        } catch (error) {
+            setIsErrorSuccess(prevValue => ({
+                ...prevValue,
+                accountError: true,
+                message: cleanMessage(error.code),
+                isCreate: true,
+            }))
+        }
     }
 
     return (
-        <main className="md:h-screen  bg-secondary1 flex-col justify-center items-center space-y-2 px-16 py-5">
+        <main className="md:h-screen md:w-screen bg-secondary1 flex flex-col justify-center items-center px-16 py-5">
 
+            <div className="md:-ml-40">
             { isErrorSuccess.isCreate&&accountMessageDisplay(isErrorSuccess.message) }
+            </div>
 
-            <form onSubmit={ handleSubmit } className="px-7 py-5 rounded-lg bg-option2 w-auto flex flex-col my-5">
+            <form onSubmit={ handleSubmit } className="px-7 py-5 rounded-lg bg-option2 flex flex-col my-5">
                 <Link to={"/"}><h2 className="text-primary1 font-bold text-3xl mb-6 cursor-pointer">Grocery list</h2></Link>
                 <h1 className="font-aleo text-green text-xl leading-5 mb-6 cursor-pointer">Create Account to continue to app</h1>
 
-                <div id="name-container" className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-3 mb-6">
+                <div id="name-container" className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:gap-3 mb-6">
                     <input value={ accountData.firstName } onChange={ handleForm } type="text" placeholder="First name" name="firstName" className="px-3 py-1 rounded focus:outline-green focus:invalid:outline-red invalid:text-red text-lg text-dark2" required/>
                     <input value={ accountData.lastName } onChange={ handleForm } type="text" placeholder="Last name" name="lastName" className="px-3 py-1 rounded focus:outline-green focus:invalid:outline-red invalid:text-red text-lg text-dark2" required/>
                 </div>
@@ -160,12 +178,13 @@ export default function CreateAccount() {
                 <div id="password-container" className="flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-3 mb-6">
 
                     <input value={ accountData.password } onChange={ handleForm } type="password" placeholder="Password" name="password" className={ `px-3 py-1 rounded ${ styleError } outline-none border-red focus:invalid:outline-red invalid:text-red text-lg text-dark2` } autoComplete="on" required/>
+                    
                     <input value={ accountData.confirmPassword } onChange={ handleForm } type="password" placeholder="Confirm password" name="confirmPassword" className={ `px-3 py-1 rounded ${ styleError } outline-none focus:invalid:outline-red invalid:text-red text-lg text-dark2` } autoComplete="on" required/>
                 </div>
 
                 <div className="md:text-right md:space-x-2 space-y-2 md:space-y-0">
                     <button type="submit" className="w-full md:w-auto px-4 py-1 bg-primary2 rounded-full text-light1 font-nunito text-sm hover:bg-light1 hover:text-green hover:font-bold transition ease-out duration-500">Create Account</button>
-                    <button type="reset" className="w-full md:w-auto px-4 py-1 bg-primary2 rounded-full text-light1 font-nunito text-sm hover:bg-light1 hover:text-red hover:font-bold transition ease-out duration-500"><Link to={"/"}>Cancel</Link></button>
+                    <button type="reset" className="w-full md:w-auto px-4 py-1 bg-primary2 rounded-full text-light1 font-nunito text-sm hover:bg-light1 hover:text-red hover:font-bold transition ease-out duration-500"><Link to={"/"}>Close</Link></button>
                 </div>
             
             </form>
