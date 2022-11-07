@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Link, redirect } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 
 import {
     getAuth,
@@ -10,6 +10,7 @@ import {
     doc,
     getDoc,
 } from "firebase/firestore";
+import { db } from "../configuration/firebaseConfiguration";
 
 import { auth } from "../configuration/firebaseConfiguration";
 
@@ -22,8 +23,8 @@ export default function SignInPage() {
     let [eventError, setEventError] = useState(() => ({
                             isError: false,
                             message: "",
-                        }))
-
+                        }));
+    const navigate = useNavigate();
     const email = loginForm.email;
     const password = loginForm.password;
 
@@ -56,12 +57,13 @@ export default function SignInPage() {
     async function loginAndGetData(auth, email, password) {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
+            const userid = userCredential.uid;
 
-            // fix redirect
-            // https://www.youtube.com/watch?v=i0rbmzyaVaM
-            redirect("/");
-            console.log("login")
+            // set params
+            // getDoc
+            // https://firebase.google.com/docs/firestore/query-data/get-data
+            console.log(user)
+            navigate("/")
         } catch(error){
             setEventError(prevValue => ({
                 ...prevValue,

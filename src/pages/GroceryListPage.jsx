@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import React from "react";
+import GroceryList from "../components/GroceryList";
 
 export const data = React.createContext();
 export default function GroceryListPage() {

@@ -8,7 +8,7 @@ import ErrorPage from "./pages/Error-page";
 import UserPage from "./pages/UserPage";
 import SignInPage from "./pages/SignInPage";
 import CreateAccount from "./pages/CreateAccount";
-import { Children } from "react";
+// import { Children } from "react";
 import GroceryListPage from "./pages/GroceryListPage";
 
 const router = createBrowserRouter([
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
             {
-                path: ":user",
+                path: ":username",
                 element: <GroceryListPage />,
             }
         ],
