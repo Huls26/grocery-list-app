@@ -57,18 +57,23 @@ export default function SignInPage() {
     async function loginAndGetData(auth, email, password) {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const userid = userCredential.uid;
+            const userId = userCredential.user.uid;
+            const docRef = doc(db, "users", userId);
+            const docSnap = await getDoc(docRef);
 
-            // set params
-            // getDoc
-            // https://firebase.google.com/docs/firestore/query-data/get-data
-            console.log(user)
-            navigate("/")
+            if (docSnap.exists()) {
+                const userDoc = docSnap.data();
+                const urlName = userDoc.firstName;
+
+                navigate(`/${ urlName }`);
+            } else {
+                throw new Error("Something Went wrong! Try again")
+            }
         } catch(error){
             setEventError(prevValue => ({
                 ...prevValue,
                 isError: true,
-                message: cleanMessage(error.code),
+                message: error.code ? cleanMessage(error.code): error.message,
             }))
         }
     }
