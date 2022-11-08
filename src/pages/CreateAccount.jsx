@@ -82,7 +82,6 @@ export default function CreateAccount() {
                 }, "15000")
                 setIsErrorSuccess(prevValue => ({
                     ...prevValue,
-                    accountError: false,
                     message: successMessage,
                     isCreate: true,
                     passwordError: false,
