@@ -16,7 +16,7 @@ import GroceryList from "../components/GroceryList";
 import Header from "../components/Header";
 
 import GroceryListPage from "./GroceryListPage";
-import { auth } from "../configuration/firebaseConfiguration";
+import { auth, db } from "../configuration/firebaseConfiguration";
 
 export const form = React.createContext();
 
@@ -38,20 +38,37 @@ export default function UserPage() {
         return onAuthStateChanged(auth, user => {
             if (user) {
                 const uid = user.uid;
-                console.log(user)
+                getGroceryList(uid);
             } else {
                 console.log("unsubscribe");
             }
         })
     }, [])
     
+    // asyn/await
+    // fetch doc
+    async function getGroceryList(uid) {
+        const docRef = doc(db, "users", uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            console.log(docSnap.data())
+
+            const groceryListData = docSnap.data().groceryList;
+            setFormData(prevValue => ({
+                ...prevValue,
+                groceryList: groceryListData,
+            }))
+        } else {
+            console.log("no data or something went wrong")
+        }
+    }
+
     return (
         <div>
             <section className="bg-option2 pb-20 ">
                 <header className="bg-primary1 px-16 py-3 mb-6">
-                    <form.Provider value={ {formData, setFormData} }>
-                        <Header />
-                    </form.Provider>
+                    <Header />
                 </header>
 
                 <div className="px-16">
