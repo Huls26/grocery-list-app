@@ -5,6 +5,7 @@ import { Outlet } from "react-router-dom";
 import {
     doc,
     getDoc,
+    onSnapshot,
 } from "firebase/firestore";
 import {
     onAuthStateChanged,
@@ -16,10 +17,12 @@ import GroceryList from "../components/GroceryList";
 import Header from "../components/Header";
 
 import GroceryListPage from "./GroceryListPage";
+import DefaultGroceryList from "./DefaultGroceryList";
 import { auth, db } from "../configuration/firebaseConfiguration";
 
 export const form = React.createContext();
 
+// components
 export default function UserPage() {
     const defaultData = {
         grocery: {
@@ -32,38 +35,35 @@ export default function UserPage() {
         groceryList: [],
     }
     let [formData, setFormData] = useState(() => defaultData);
-
-    // subscribe when user is login
+ 
     useEffect(() => {
-        return onAuthStateChanged(auth, user => {
-            if (user) {
-                const uid = user.uid;
-                getGroceryList(uid);
-            } else {
-                console.log("unsubscribe");
-            }
-        })
+        (function loader() {
+            const isLoginUser = onAuthStateChanged(auth, user => {
+                let unSubSnapShot;
+                if (user) {
+                    const uid = user.uid;
+                    const docRef = doc(db, "users", uid);
+                
+                    unSubSnapShot = onSnapshot(docRef, docSnap => {
+                        const groceryListData = docSnap.data().groceryList;
+                        console.log(groceryListData)
+                        setFormData(prevValue => ({
+                                        ...prevValue,
+                                        groceryList: groceryListData,
+                                        isSignIn: true,
+                                    }))
+                    }) 
+                } else {
+                    unSubSnapShot ? unSubSnapShot() : null;
+                    !user ? null : isLoginUser();
+                    setFormData(() => defaultData)
+                    console.log("unsub");
+                }
+            })
+        })()
     }, [])
     
-    // asyn/await
-    // fetch doc
-    async function getGroceryList(uid) {
-        const docRef = doc(db, "users", uid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-            console.log(docSnap.data())
-
-            const groceryListData = docSnap.data().groceryList;
-            setFormData(prevValue => ({
-                ...prevValue,
-                groceryList: groceryListData,
-            }))
-        } else {
-            console.log("no data or something went wrong")
-        }
-    }
-
+   
     return (
         <div>
             <section className="bg-option2 pb-20 ">
@@ -81,14 +81,11 @@ export default function UserPage() {
             </section>
 
             <form.Provider value={ {formData, setFormData} }>
-                <Outlet />
+                { formData.isSignIn ? <Outlet />: <DefaultGroceryList />}
             </form.Provider>
            
-            {/* <main id="grocery-list" className="px-16 md:mx-auto -mt-20">
-                <form.Provider value={ {formData, setFormData} }>
-                    <GroceryList />
-                </form.Provider>
-            </main> */}
+            {/* add name of the user 
+            add save btn for grocery list when user is login */}
         </div>
     )
 }
