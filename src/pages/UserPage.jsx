@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import {
     doc,
@@ -35,7 +35,9 @@ export default function UserPage() {
         groceryList: [],
     }
     let [formData, setFormData] = useState(() => defaultData);
- 
+    const navigate = useNavigate();
+
+    console.log(formData)
     useEffect(() => {
         (function loader() {
             const isLoginUser = onAuthStateChanged(auth, user => {
@@ -46,7 +48,11 @@ export default function UserPage() {
                 
                     unSubSnapShot = onSnapshot(docRef, docSnap => {
                         const groceryListData = docSnap.data().groceryList;
-                        console.log(groceryListData)
+                        console.log(formData)
+                        const userDoc = docSnap.data();
+                        const urlName = userDoc.firstName;
+        
+                        navigate(`/${ urlName }`);
                         setFormData(prevValue => ({
                                         ...prevValue,
                                         groceryList: groceryListData,
@@ -54,15 +60,14 @@ export default function UserPage() {
                                     }))
                     }) 
                 } else {
-                    unSubSnapShot ? unSubSnapShot() : null;
-                    !user ? null : isLoginUser();
+                    unSubSnapShot && unSubSnapShot();
+                    // !user && isLoginUser();
                     setFormData(() => defaultData)
                     console.log("unsub");
                 }
             })
         })()
     }, [])
-    
    
     return (
         <div>

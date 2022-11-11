@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 
 import {
     getAuth,
@@ -24,7 +24,7 @@ export default function SignInPage() {
                             isError: false,
                             message: "",
                         }));
-    const navigate = useNavigate();
+
     const email = loginForm.email;
     const password = loginForm.password;
 
@@ -58,14 +58,16 @@ export default function SignInPage() {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const userId = userCredential.user.uid;
+            
+            // delete
             const docRef = doc(db, "users", userId);
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                const userDoc = docSnap.data();
-                const urlName = userDoc.firstName;
+                // const userDoc = docSnap.data();
+                // const urlName = userDoc.firstName;
 
-                navigate(`/${ urlName }`);
+                // navigate(`/${ urlName }`);
             } else {
                 throw new Error("Something Went wrong! Try again")
             }
