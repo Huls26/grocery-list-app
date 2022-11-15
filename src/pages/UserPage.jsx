@@ -19,6 +19,7 @@ import Header from "../components/Header";
 import GroceryListPage from "./GroceryListPage";
 import DefaultGroceryList from "./DefaultGroceryList";
 import { auth, db } from "../configuration/firebaseConfiguration";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 export const form = React.createContext();
 
@@ -32,12 +33,14 @@ export default function UserPage() {
             },
         isAdd: false,
         isSignIn: false,
+        isLoading: true,
+        username: "",
         groceryList: [],
     }
     let [formData, setFormData] = useState(() => defaultData);
     const navigate = useNavigate();
 
-    console.log(formData)
+    // console.log(formData)
     useEffect(() => {
         (function loader() {
             const isLoginUser = onAuthStateChanged(auth, user => {
@@ -48,7 +51,6 @@ export default function UserPage() {
                 
                     unSubSnapShot = onSnapshot(docRef, docSnap => {
                         const groceryListData = docSnap.data().groceryList;
-                        console.log(formData)
                         const userDoc = docSnap.data();
                         const urlName = userDoc.firstName;
         
@@ -57,12 +59,17 @@ export default function UserPage() {
                                         ...prevValue,
                                         groceryList: groceryListData,
                                         isSignIn: true,
+                                        isLoading: false,
+                                        username: urlName,
                                     }))
                     }) 
                 } else {
                     unSubSnapShot && unSubSnapShot();
                     // !user && isLoginUser();
-                    setFormData(() => defaultData)
+                    setFormData(() => ({
+                        ...defaultData,
+                        isLoading: false,
+                    }))
                     console.log("unsub");
                 }
             })
@@ -73,7 +80,9 @@ export default function UserPage() {
         <div>
             <section className="bg-option2 pb-20 ">
                 <header className="bg-primary1 px-16 py-3 mb-6">
-                    <Header />
+                    <form.Provider value={ {formData, setFormData} }>
+                        <Header />
+                    </form.Provider>
                 </header>
 
                 <div className="px-16">
