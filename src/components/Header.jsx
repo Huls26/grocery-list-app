@@ -9,18 +9,26 @@ import { auth } from '../configuration/firebaseConfiguration';
 
 import { Link } from 'react-router-dom';
 import { form } from "../pages/UserPage";
+import { random } from 'nanoid';
 
 export default function Header() {
     let { formData, setFormData } = useContext(form);
     const isLogin = formData.isSignIn;
-    const username = formData.username;
-    const withEffect = "animate-bounce";
+    const username = formData.user.firstName;
+    const withEffect = ["animate-spin", "animate-pulse", "animate-ping", "animate-bounce"];
     const noEffect = "animate-none";
     let [userEffect, setUserEffect] = useState(() => noEffect);
 
     // event
     function signOutUser() {
         signOut(auth);
+    }
+
+    function randomAnimation(effects) {
+        const length = effects.length;
+        const randomIdx = Math.floor(Math.random() * length);
+
+        return effects[randomIdx]
     }
 
     function signOutBtn() {
@@ -33,7 +41,7 @@ export default function Header() {
 
     function userBtn() {
         if (userEffect === noEffect) {
-            setUserEffect(() => withEffect)
+            setUserEffect(() => randomAnimation(withEffect))
 
             setTimeout(() => {
                 setUserEffect(() => noEffect)

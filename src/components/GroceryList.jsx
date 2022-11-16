@@ -2,6 +2,9 @@ import React, { useState, useContext, useEffect  } from "react";
 import GroceryItem from "./GroceryItem";
 import { form } from "../pages/UserPage";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../configuration/firebaseConfiguration";
 import { json } from "react-router-dom";
@@ -19,7 +22,7 @@ export default function GroceryList() {
     }
 
     function isSignIn(groceryElements) {
-        return ( !isLoading ? displayElement(groceryElements) : <h1 className="my-3 text-center text-3xl font-bold text-primary2 cursor-pointer">Loading...</h1>)
+        return ( !isLoading ? displayElement(groceryElements) : <h1 className="my-3 text-center text-3xl font-bold text-primary2 cursor-pointer">Loading... <span><FontAwesomeIcon className="animate-spin" icon={ faSpinner } /></span></h1>)
     }
 
     return (

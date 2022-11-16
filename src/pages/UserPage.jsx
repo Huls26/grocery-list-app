@@ -34,13 +34,15 @@ export default function UserPage() {
         isAdd: false,
         isSignIn: false,
         isLoading: true,
-        username: "",
+        user: {
+            name: "",
+            id: "",
+        },
         groceryList: [],
     }
     let [formData, setFormData] = useState(() => defaultData);
     const navigate = useNavigate();
 
-    // console.log(formData)
     useEffect(() => {
         (function loader() {
             const isLoginUser = onAuthStateChanged(auth, user => {
@@ -60,7 +62,12 @@ export default function UserPage() {
                                         groceryList: groceryListData,
                                         isSignIn: true,
                                         isLoading: false,
-                                        username: urlName,
+                                        user: {
+                                            email: userDoc.email,
+                                            firstName: urlName,
+                                            id: uid,
+                                            lastName: userDoc.lastName,
+                                        },
                                     }))
                     }) 
                 } else {
@@ -98,7 +105,7 @@ export default function UserPage() {
                 { formData.isSignIn ? <Outlet />: <DefaultGroceryList />}
             </form.Provider>
            
-            {/* add name of the user 
+            {/*
             add save btn for grocery list when user is login */}
         </div>
     )

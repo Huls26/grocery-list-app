@@ -142,6 +142,7 @@ export default function CreateAccount() {
                 firstName: accountData.firstName,
                 lastName: accountData.lastName,
                 email: accountData.email,
+                id: id,
             });
             const sO = await signOut(auth);
         } catch (error) {
