@@ -104,9 +104,6 @@ export default function UserPage() {
             <form.Provider value={ {formData, setFormData} }>
                 { formData.isSignIn ? <Outlet />: <DefaultGroceryList />}
             </form.Provider>
-           
-            {/*
-            add save btn for grocery list when user is login */}
         </div>
     )
 }

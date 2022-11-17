@@ -1,9 +1,9 @@
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from "../configuration/firebaseConfiguration";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
-import { useState, useContext, useEffect } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCartShopping, faFaceGrinWink } from '@fortawesome/free-solid-svg-icons';
+import { useState, useContext, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 
 import { form } from '../pages/UserPage';
@@ -32,13 +32,10 @@ export default function AddItem() {
 
     // setTimeout message
     function setMessage(length, maxChar) {
-        const myTimeout = setTimeout(() => {
-            setError(() => defaultE)
-        }, 3000);
-
-        console.log(length)
-        if (length > maxChar || !(length <= maxChar - 1 )) {
-           clearTimeout(myTimeout);
+        if (length < maxChar && error.isError) {
+            const myTimeout = setTimeout(() => {
+                setError(() => defaultE)
+            }, 3000);
         }
     }
 
@@ -57,7 +54,7 @@ export default function AddItem() {
         const maxChar = 19;
         const errorMessage = "You have exceeded the maximum character limit, Please try at least 18 character."
 
-        if (value.length === maxChar) {
+        if (value.length >= maxChar) {
             setMessage(value.length, maxChar)
             setError(prevValue => ({
                 ...prevValue,
@@ -74,28 +71,37 @@ export default function AddItem() {
                     }
             }))
         }
-       
     }
 
     function handleSubmit(event) {
         event.preventDefault()
+        const maxItem = 99;
+        const errorMessage = "You have reach the maximum grocery list that's a lot of items my friend. ; )"
 
-        setFormData(prevValue => {
-            const groceryItem = {
-                ...prevValue.grocery,
-                id: nanoid(10),
-            }
-
-            return ({
+        if (formData.groceryList.length >= maxItem) {
+            setError(prevValue => ({
                 ...prevValue,
-                groceryList: [groceryItem, ...prevValue.groceryList],
-                grocery: {
-                    ...prevValue.grocery, 
-                    item: "",
-                    id: "",
-                },
+                isError: true,
+                errorMessage: errorMessage,
+            }))
+        } else {
+            setFormData(prevValue => {
+                const groceryItem = {
+                    ...prevValue.grocery,
+                    id: nanoid(10),
+                }
+    
+                return ({
+                    ...prevValue,
+                    groceryList: [groceryItem, ...prevValue.groceryList],
+                    grocery: {
+                        ...prevValue.grocery, 
+                        item: "",
+                        id: "",
+                    },
+                })
             })
-        })
+        }
     }
 
     const errorStyle = {
