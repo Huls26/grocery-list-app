@@ -1,5 +1,8 @@
 import { useContext, useState, useEffect } from 'react';
 
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from "../configuration/firebaseConfiguration";
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -16,6 +19,24 @@ export default function GroceryItem({item}) {
     const isCheckStyle = {
         textDecoration: isCheckItem ? "line-through" : "none",
     }
+
+    useEffect(() => {
+        const uid = formData.user.id;
+        const userDataRef = doc(db, "users", uid);
+
+        // add localstorage 
+        // add undo btn
+
+        if (formData.isSignIn) {
+            const updateData = {
+                ...formData.user,
+                groceryList: formData.groceryList,
+            }
+
+            updateDoc(userDataRef, updateData)
+        }
+      
+    }, [formData])
 
     // event
     function handleCheck() {

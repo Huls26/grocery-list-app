@@ -38,7 +38,7 @@ export default function SignInPage() {
     function handleLogin(event) {
         event.preventDefault();
 
-        loginAndGetData(auth, email, password)
+        loginAndGetData(auth, email, password);
     }
 
     function handleChange(event) {

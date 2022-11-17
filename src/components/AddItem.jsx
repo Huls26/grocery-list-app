@@ -1,4 +1,4 @@
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
 import { db } from "../configuration/firebaseConfiguration";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,25 +10,11 @@ import { form } from '../pages/UserPage';
 
 export default function AddItem() {
     const {formData, setFormData}= useContext(form);
-    const uid = formData.user.id;
-    const userDataRef = doc(db, "users", uid);
     const defaultE = {
         isError: false,
         errorMessage: "",
     }
     let [error, setError] = useState(() => defaultE)
-
-    useEffect(() => {
-        if (formData.isSignIn) {
-            const updateData = {
-                ...formData.user,
-                groceryList: formData.groceryList,
-            }
-
-            updateDoc(userDataRef, updateData)
-        }
-      
-    }, [formData.groceryList.length])
 
     // setTimeout message
     function setMessage(length, maxChar) {
