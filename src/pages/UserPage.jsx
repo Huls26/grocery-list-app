@@ -77,7 +77,7 @@ export default function UserPage() {
                         ...defaultData,
                         isLoading: false,
                     }))
-                    console.log("unsub");
+                    // console.log("unsub");
                 }
             })
         })()

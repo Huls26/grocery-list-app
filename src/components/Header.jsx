@@ -22,6 +22,7 @@ export default function Header() {
     // event
     function signOutUser() {
         signOut(auth);
+        localStorage.clear()
     }
 
     function randomAnimation(effects) {

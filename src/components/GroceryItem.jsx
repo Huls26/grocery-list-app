@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
+import { useSaveLocalList, useUpdateDocFirestore } from '../utils/customUtils';
 
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from "../configuration/firebaseConfiguration";
@@ -20,23 +21,8 @@ export default function GroceryItem({item}) {
         textDecoration: isCheckItem ? "line-through" : "none",
     }
 
-    useEffect(() => {
-        const uid = formData.user.id;
-        const userDataRef = doc(db, "users", uid);
-
-        // add localstorage 
-        // add undo btn
-
-        if (formData.isSignIn) {
-            const updateData = {
-                ...formData.user,
-                groceryList: formData.groceryList,
-            }
-
-            updateDoc(userDataRef, updateData)
-        }
-      
-    }, [formData])
+    console.log(formData)
+    useUpdateDocFirestore(formData)
 
     // event
     function handleCheck() {
@@ -59,7 +45,10 @@ export default function GroceryItem({item}) {
         });
     }
     
+    // localStorage.clear()
+    // console.log(localStorage.getItem("localGroceryList"))
     function handleDelete() {
+        useSaveLocalList(formData.groceryList);
         setFormData(prevValue => {
             const newItems = prevValue.groceryList.filter(item => itemId !== item.id);
 
