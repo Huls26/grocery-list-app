@@ -82,6 +82,7 @@ export default function GroceryList() {
                 { isSignIn(groceryElements) }
                 
                 { clearBtnContainer(groceryElements) }
+                check and test app before host
             </div>          
         </main>
     )
